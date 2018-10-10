@@ -19,7 +19,7 @@ public class Writer implements ItemWriter<Person> {
 
     @Override
     @Transactional
-    public void write(List<? extends Person> list) throws Exception {
+    public void write(List<? extends Person> list) {
 
         LOGGER.info("Start writing...");
         personRepo.saveAll(list);

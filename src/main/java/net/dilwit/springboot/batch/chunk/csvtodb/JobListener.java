@@ -17,12 +17,20 @@ public class JobListener extends JobExecutionListenerSupport {
     private PersonRepo personRepo;
 
     @Override
+    public void beforeJob(JobExecution jobExecution) {
+
+        if (jobExecution.getStatus() == BatchStatus.STARTED) {
+            LOGGER.info("BATCH JOB (csv-to-db-job) STARTED SUCCESSFULLY");
+        }
+    }
+
+    @Override
     public void afterJob(JobExecution jobExecution) {
 
         long count = personRepo.count();
 
         if (jobExecution.getStatus() == BatchStatus.COMPLETED && count == 5) {
-            LOGGER.info("BATCH JOB COMPLETED SUCCESSFULLY");
+            LOGGER.info("BATCH JOB (csv-to-db-job) COMPLETED SUCCESSFULLY");
         }
     }
 }

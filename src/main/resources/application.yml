@@ -4,3 +4,11 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+    test-on-borrow: true
+    remove-abandoned: true
+    validation-query: SELECT 1;
+  jpa:
+    show-sql: false
+    properties:
+      hibernte:
+        format-sql: true

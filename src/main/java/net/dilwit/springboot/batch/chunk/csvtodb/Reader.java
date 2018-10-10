@@ -18,8 +18,6 @@ public class Reader extends FlatFileItemReader<Person> {
 
         super();
 
-        LOGGER.info("Start reading...");
-
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setNames(new String[] { "firstName", "lastName"});
         lineTokenizer.setDelimiter(",");
@@ -34,7 +32,11 @@ public class Reader extends FlatFileItemReader<Person> {
         setLineMapper(defaultLineMapper);
 
         setResource(new ClassPathResource("input-data.csv"));
+    }
 
-        //setLinesToSkip(2);
+    @Override
+    public Person read() throws Exception {
+        LOGGER.info("Start reading...");
+        return super.read();
     }
 }

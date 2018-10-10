@@ -12,33 +12,33 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class BatchConfiguration {
+public class CsvToDbBatchConfiguration {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(BatchConfiguration.class);
-
-    @Autowired
-    public JobBuilderFactory jobBuilderFactory;
+    private static Logger LOGGER = LoggerFactory.getLogger(CsvToDbBatchConfiguration.class);
 
     @Autowired
-    public StepBuilderFactory stepBuilderFactory;
+    private JobBuilderFactory jobBuilderFactory;
 
     @Autowired
-    Reader reader;
+    private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    Processor processor;
+    private Reader reader;
 
     @Autowired
-    Writer writer;
+    private Processor processor;
 
     @Autowired
-    JobListener listener;
+    private Writer writer;
+
+    @Autowired
+    private JobListener listener;
 
     @Bean(name = "csv-to-db-job")
     public Job csvToDbJob() {
 
         Step step = stepBuilderFactory.get("step-1")
-                .<Person, Person> chunk(1)
+                .<Person, Person> chunk(2) // Determines how reading, processing is done but writing is done only once per chunk. Ref console logs.
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)

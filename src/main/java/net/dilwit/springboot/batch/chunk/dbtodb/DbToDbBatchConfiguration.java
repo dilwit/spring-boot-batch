@@ -1,7 +1,5 @@
 package net.dilwit.springboot.batch.chunk.dbtodb;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -12,41 +10,40 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class BatchConfiguration {
-
-    private static Logger LOGGER = LoggerFactory.getLogger(BatchConfiguration.class);
+public class DbToDbBatchConfiguration {
 
     @Autowired
-    public JobBuilderFactory jobBuilderFactory;
+    private JobBuilderFactory jobBuilderFactory;
 
     @Autowired
-    public StepBuilderFactory stepBuilderFactory;
+    private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    Reader reader;
+    private StudentConcatWriter studentConcatWriter;
 
     @Autowired
-    Processor processor;
+    private StudentReader studentReader;
 
     @Autowired
-    Writer writer;
+    private StudentToStudentConcatProcessor studentToStudentConcatProcessor;
 
     @Autowired
-    JobListener listener;
+    private DbToDbBatchListener dbToDbBatchListener;
+
 
     @Bean(name = "db-to-db-job")
-    public Job csvToDbJob() {
+    public Job dbToDbJob() {
 
         Step step = stepBuilderFactory.get("step-1")
-                .<Person, Person> chunk(1)
-                .reader(reader)
-                .processor(processor)
-                .writer(writer)
+                .<Student, StudentConcat> chunk(3) // Determines how reading, processing is done but writing is done only once per chunk. Ref console logs.
+                .reader(studentReader)
+                .processor(studentToStudentConcatProcessor)
+                .writer(studentConcatWriter)
                 .build();
 
         Job job = jobBuilderFactory.get("db-to-db-job")
                 .incrementer(new RunIdIncrementer())
-                .listener(listener)
+                .listener(dbToDbBatchListener)
                 .start(step)
                 .build();
 
