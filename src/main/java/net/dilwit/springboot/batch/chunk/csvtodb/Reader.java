@@ -31,7 +31,7 @@ public class Reader extends FlatFileItemReader<Person> {
         defaultLineMapper.setFieldSetMapper(fieldSetMapper);
         setLineMapper(defaultLineMapper);
 
-        setResource(new ClassPathResource("input-data.csv"));
+        setResource(new ClassPathResource("input-person-data.csv"));
     }
 
     @Override
