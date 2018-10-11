@@ -40,7 +40,7 @@ DbToDbJdbcPagingBatchConfiguration {
     public Job dbToDbJob() {
 
         Step step = stepBuilderFactory.get("step-1")
-                .<Animal, AnimalCaps> chunk(3) // Determines how reading, processing is done but writing is done only once per chunk. Ref console logs.
+                .<Animal, AnimalCaps> chunk(2) // Determines how (reading is determined by pageSize) processing is done but writing is done only once per chunk. Ref console logs.
                 .reader(animalJdbcPagingReader)
                 .processor(animalProcessor)
                 .writer(animalCapsWriter)

@@ -50,9 +50,9 @@ public class AnimalJdbcPagingReader extends JdbcPagingItemReader<Animal> impleme
     }
 
     @Override
-    public Animal read() throws Exception {
-        LOGGER.info("Start reading...");
-        return super.read();
+    protected void doReadPage() {
+        LOGGER.info("Start reading page...");
+        super.doReadPage();
     }
 
     @Override

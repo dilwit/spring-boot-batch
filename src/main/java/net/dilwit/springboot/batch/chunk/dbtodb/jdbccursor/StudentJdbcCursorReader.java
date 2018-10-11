@@ -14,6 +14,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Component
 public class StudentJdbcCursorReader extends JdbcCursorItemReader<Student>  implements StepExecutionListener {
@@ -34,9 +36,9 @@ public class StudentJdbcCursorReader extends JdbcCursorItemReader<Student>  impl
     }
 
     @Override
-    public Student read() throws Exception {
-        LOGGER.info("Start reading...");
-        return super.read();
+    protected Student readCursor(ResultSet rs, int currentRow) throws SQLException {
+        LOGGER.info("Start cursor reading...");
+        return super.readCursor(rs, currentRow);
     }
 
     @Override
