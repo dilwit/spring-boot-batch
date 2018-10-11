@@ -1,4 +1,4 @@
-package net.dilwit.springboot.batch.chunk.csvtodb;
+package net.dilwit.springboot.batch.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

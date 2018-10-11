@@ -1,14 +1,16 @@
-package net.dilwit.springboot.batch.chunk.dbtodb;
+package net.dilwit.springboot.batch.chunk.dbtodb.jdbccursor;
 
+import net.dilwit.springboot.batch.domain.Student;
+import net.dilwit.springboot.batch.domain.StudentConcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StudentToStudentConcatProcessor implements ItemProcessor<Student, StudentConcat> {
+public class StudentProcessor implements ItemProcessor<Student, StudentConcat> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StudentToStudentConcatProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentProcessor.class);
 
     @Override
     public StudentConcat process(Student student) {

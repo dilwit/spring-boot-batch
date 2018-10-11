@@ -1,8 +1,9 @@
-package net.dilwit.springboot.batch.chunk.dbtocsv;
+package net.dilwit.springboot.batch.chunk.dbtodb.jdbcpaging;
 
+import net.dilwit.springboot.batch.domain.Animal;
+import net.dilwit.springboot.batch.domain.AnimalCaps;
 import net.dilwit.springboot.batch.domain.Student;
-import net.dilwit.springboot.batch.chunk.dbtodb.jdbccursor.StudentJdbcCursorReader;
-import net.dilwit.springboot.batch.domain.Vehicle;
+import net.dilwit.springboot.batch.domain.StudentConcat;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -13,7 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class DbToCsvBatchConfiguration {
+public class
+DbToDbJdbcPagingBatchConfiguration {
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -22,31 +24,31 @@ public class DbToCsvBatchConfiguration {
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    private VehicleWriter vehicleWriter;
+    private AnimalCapsWriter animalCapsWriter;
 
     @Autowired
-    private VehicleJdbcCursorReader vehicleJdbcCursorReader;
+    private AnimalJdbcPagingReader animalJdbcPagingReader;
 
     @Autowired
-    private VehicleProcessor vehicleProcessor;
+    private AnimalProcessor animalProcessor;
 
     @Autowired
-    private DbToCsvBatchListener dbToCsvBatchListener;
+    private DbToDbPagingBatchListener dbToDbPagingBatchListener;
 
 
-    @Bean(name = "db-to-csv-job")
+    @Bean(name = "db-to-db-jdbc-paging-job")
     public Job dbToDbJob() {
 
         Step step = stepBuilderFactory.get("step-1")
-                .<Vehicle, String> chunk(4) // Determines how reading, processing is done but writing is done only once per chunk. Ref console logs.
-                .reader(vehicleJdbcCursorReader)
-                .processor(vehicleProcessor)
-                .writer(vehicleWriter)
+                .<Animal, AnimalCaps> chunk(3) // Determines how reading, processing is done but writing is done only once per chunk. Ref console logs.
+                .reader(animalJdbcPagingReader)
+                .processor(animalProcessor)
+                .writer(animalCapsWriter)
                 .build();
 
-        Job job = jobBuilderFactory.get("db-to-csv-job")
+        Job job = jobBuilderFactory.get("db-to-db-jdbc-paging-job")
                 .incrementer(new RunIdIncrementer())
-                .listener(dbToCsvBatchListener)
+                .listener(dbToDbPagingBatchListener)
                 .start(step)
                 .build();
 

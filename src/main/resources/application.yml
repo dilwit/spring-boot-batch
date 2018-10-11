@@ -9,6 +9,7 @@ spring:
     validation-query: SELECT 1;
   jpa:
     show-sql: false
+
     properties:
       hibernte:
         format-sql: true
