@@ -1,5 +1,9 @@
-package net.dilwit.springboot.batch.chunk.dbtocsv;
+package net.dilwit.springboot.batch.tasklet.dbtocsv;
 
+import net.dilwit.springboot.batch.chunk.dbtocsv.DbToCsvBatchListener;
+import net.dilwit.springboot.batch.chunk.dbtocsv.VehicleJdbcCursorReader;
+import net.dilwit.springboot.batch.chunk.dbtocsv.VehicleProcessor;
+import net.dilwit.springboot.batch.chunk.dbtocsv.VehicleWriter;
 import net.dilwit.springboot.batch.domain.Vehicle;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -11,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class DbToCsvBatchConfiguration {
+public class DbToCsvTaskletBatchConfiguration {
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -31,8 +35,11 @@ public class DbToCsvBatchConfiguration {
     @Autowired
     private DbToCsvBatchListener dbToCsvBatchListener;
 
+    @Autowired
+    private FileCleanUpTasklet fileCleanUpTasklet;
 
-    @Bean(name = "db-to-csv-job")
+
+    @Bean(name = "db-to-csv-tasklet-job")
     public Job dbToDbJob() {
 
         Step step = stepBuilderFactory.get("step-1")
@@ -42,10 +49,14 @@ public class DbToCsvBatchConfiguration {
                 .writer(vehicleWriter)
                 .build();
 
-        Job job = jobBuilderFactory.get("db-to-csv-job")
+        Job job = jobBuilderFactory.get("db-to-csv-tasklet-job")
                 .incrementer(new RunIdIncrementer())
                 .listener(dbToCsvBatchListener)
                 .start(step)
+                .next(stepBuilderFactory.get("step-2")
+                        .tasklet(fileCleanUpTasklet)
+                        .build()
+                )
                 .build();
 
         return job;
