@@ -10,6 +10,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,21 +43,22 @@ public class DbToCsvTaskletBatchConfiguration {
     @Bean(name = "db-to-csv-tasklet-job")
     public Job dbToDbJob() {
 
-        Step step = stepBuilderFactory.get("step-1")
+        Step step1 = stepBuilderFactory.get("step-1")
                 .<Vehicle, String> chunk(4) // Determines how reading, processing is done but writing is done only once per chunk. Ref console logs.
                 .reader(vehicleJdbcCursorReader)
                 .processor(vehicleProcessor)
                 .writer(vehicleWriter)
                 .build();
 
+        TaskletStep step2 = stepBuilderFactory.get("step-2")
+                .tasklet(fileCleanUpTasklet)
+                .build();
+
         Job job = jobBuilderFactory.get("db-to-csv-tasklet-job")
                 .incrementer(new RunIdIncrementer())
                 .listener(dbToCsvBatchListener)
-                .start(step)
-                .next(stepBuilderFactory.get("step-2")
-                        .tasklet(fileCleanUpTasklet)
-                        .build()
-                )
+                .start(step1)
+                .next(step2)
                 .build();
 
         return job;

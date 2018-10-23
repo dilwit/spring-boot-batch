@@ -17,10 +17,10 @@ public class FileCleanUpTasklet implements Tasklet {
     private static Logger LOGGER = LoggerFactory.getLogger(CsvToDbBatchConfiguration.class);
 
     @Override
-    public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
+    public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) {
 
         LOGGER.info("Start file clean up task...");
-        
+
         try{
             File file = new File("/tmp/output-vehicle-data.csv");
             file.delete();
